@@ -1,8 +1,13 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { PROJECTS } from '../constants';
+import { Project } from '../types';
 
 const Portfolio: React.FC = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const closeModal = () => setSelectedProject(null);
+
   return (
     <section id="work" className="py-32 px-6 bg-zinc-950">
       <div className="max-w-7xl mx-auto">
@@ -22,6 +27,7 @@ const Portfolio: React.FC = () => {
           {PROJECTS.map((project, index) => (
             <div 
               key={project.id} 
+              onClick={() => setSelectedProject(project)}
               className={`group cursor-pointer ${index % 2 !== 0 ? 'md:mt-24' : ''}`}
             >
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-zinc-900">
@@ -53,6 +59,63 @@ const Portfolio: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Project Detail Modal */}
+      {selectedProject && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+          <div 
+            className="absolute inset-0 bg-black/90 backdrop-blur-xl transition-opacity duration-300"
+            onClick={closeModal}
+          />
+          <div className="relative w-full max-w-5xl bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-float-slow">
+            <button 
+              onClick={closeModal}
+              className="absolute top-6 right-6 z-10 w-12 h-12 bg-black/50 hover:bg-primary hover:text-black text-white rounded-full flex items-center justify-center transition-all backdrop-blur-md border border-white/10"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <div className="h-[300px] lg:h-[600px]">
+                <img 
+                  src={selectedProject.imageUrl} 
+                  alt={selectedProject.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-8 lg:p-16 flex flex-col justify-center">
+                <span className="text-primary font-mono text-sm uppercase tracking-[0.2em] mb-4 block">{selectedProject.category}</span>
+                <h2 className="text-4xl lg:text-6xl font-bold mb-8 leading-tight">{selectedProject.title}</h2>
+                <p className="text-zinc-400 text-lg lg:text-xl leading-relaxed mb-12">
+                  {selectedProject.description}
+                </p>
+                
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 py-4 border-b border-white/5">
+                    <span className="text-zinc-500 font-mono text-xs uppercase w-24">Services</span>
+                    <span className="text-white">Branding, UI/UX, Creative Direction</span>
+                  </div>
+                  <div className="flex items-center gap-4 py-4 border-b border-white/5">
+                    <span className="text-zinc-500 font-mono text-xs uppercase w-24">Year</span>
+                    <span className="text-white">2024</span>
+                  </div>
+                </div>
+
+                <div className="mt-12 flex gap-4">
+                  <button className="px-8 py-4 bg-primary text-black font-bold rounded-full hover:scale-105 transition-transform">
+                    Launch Experience
+                  </button>
+                  <button className="px-8 py-4 bg-zinc-800 text-white font-bold rounded-full hover:bg-zinc-700 transition-colors">
+                    Case Study
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
